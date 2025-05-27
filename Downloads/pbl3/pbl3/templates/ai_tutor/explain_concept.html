@@ -1,0 +1,611 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Concept Explanation | AI Tutor | SkillForge{% endblock %}
+
+{% block extra_css %}
+<style>
+  .concept-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    padding: 3rem 0;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+  
+  .concept-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  
+  .explanation-container {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .topic-search {
+    border-radius: 30px;
+    padding: 1.25rem 1.5rem;
+    border: 2px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast);
+    font-size: 1.1rem;
+  }
+  
+  .topic-search:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  }
+  
+  .topic-suggestion {
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    background-color: white;
+    border: 1px solid var(--gray-200);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+  }
+  
+  .topic-suggestion:hover {
+    border-color: var(--primary-color);
+    background-color: var(--gray-50);
+    transform: translateY(-2px);
+  }
+  
+  .topic-suggestion-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  .concept-explanation {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .concept-explanation.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .explanation-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .explanation-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .explanation-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  
+  .explanation-subtitle {
+    color: var(--gray-600);
+  }
+  
+  .explanation-content {
+    line-height: 1.8;
+    color: var(--gray-800);
+  }
+  
+  .explanation-section {
+    margin-bottom: 2rem;
+  }
+  
+  .explanation-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+  }
+  
+  .explanation-section-title i {
+    margin-right: 0.75rem;
+    color: var(--primary-color);
+  }
+  
+  .explanation-img {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin: 1.5rem 0;
+  }
+  
+  .example-card {
+    background-color: var(--gray-50);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-left: 5px solid var(--primary-color);
+  }
+  
+  .example-card-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--gray-900);
+  }
+  
+  .code-block {
+    background-color: var(--gray-900);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    color: white;
+    font-family: monospace;
+    position: relative;
+    overflow-x: auto;
+  }
+  
+  .code-block-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem 1rem;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 0 8px 0 8px;
+    font-size: 0.75rem;
+    font-family: sans-serif;
+  }
+  
+  .code-block-copy {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  
+  .code-block-copy:hover {
+    opacity: 1;
+  }
+  
+  .formula {
+    background-color: var(--gray-100);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-family: serif;
+    font-size: 1.2rem;
+  }
+  
+  .related-topics {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  
+  .related-topic-tag {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+  
+  .related-topic-tag:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+  }
+  
+  .feedback-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+  }
+  
+  .feedback-btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 30px;
+    border: none;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .feedback-btn i {
+    margin-right: 0.5rem;
+  }
+  
+  .feedback-helpful {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+  }
+  
+  .feedback-helpful:hover {
+    background-color: rgba(16, 185, 129, 0.2);
+  }
+  
+  .feedback-simpler {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: var(--primary-color);
+  }
+  
+  .feedback-simpler:hover {
+    background-color: rgba(79, 70, 229, 0.2);
+  }
+  
+  .feedback-more {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--accent-color);
+  }
+  
+  .feedback-more:hover {
+    background-color: rgba(245, 158, 11, 0.2);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Concept Explanation Header -->
+<header class="concept-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-5 fw-bold mb-3">AI Concept Explainer</h1>
+        <p class="lead mb-0">Get detailed explanations of any concept you're learning about</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Search and Explanation Container -->
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="explanation-container">
+        <!-- Search Section -->
+        <div class="search-section mb-5">
+          <form id="conceptForm">
+            <div class="mb-4">
+              <input type="text" class="form-control topic-search" id="conceptInput" 
+                     placeholder="Enter a concept or topic you'd like to understand..." 
+                     autocomplete="off">
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg btn-icon">
+                <i class="bi bi-search me-2"></i> Explain This Concept
+              </button>
+            </div>
+          </form>
+          
+          <div class="mt-4">
+            <h5 class="fw-bold mb-3">Popular Concepts</h5>
+            <div class="popular-concepts">
+              <div class="topic-suggestion" data-concept="Neural Networks">
+                <div class="topic-suggestion-icon">
+                  <i class="bi bi-diagram-3"></i>
+                </div>
+                <div>
+                  <strong>Neural Networks</strong>
+                  <div class="small text-muted">Machine Learning, AI Architecture</div>
+                </div>
+              </div>
+              
+              <div class="topic-suggestion" data-concept="React Components">
+                <div class="topic-suggestion-icon">
+                  <i class="bi bi-code-square"></i>
+                </div>
+                <div>
+                  <strong>React Components</strong>
+                  <div class="small text-muted">Web Development, JavaScript</div>
+                </div>
+              </div>
+              
+              <div class="topic-suggestion" data-concept="Calculus Integration">
+                <div class="topic-suggestion-icon">
+                  <i class="bi bi-calculator"></i>
+                </div>
+                <div>
+                  <strong>Calculus Integration</strong>
+                  <div class="small text-muted">Mathematics, Calculus</div>
+                </div>
+              </div>
+              
+              <div class="topic-suggestion" data-concept="Database Normalization">
+                <div class="topic-suggestion-icon">
+                  <i class="bi bi-database"></i>
+                </div>
+                <div>
+                  <strong>Database Normalization</strong>
+                  <div class="small text-muted">Database Design, SQL</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Explanation Section (Initially Hidden) -->
+        <div class="concept-explanation" id="explanationSection">
+          <div class="explanation-header">
+            <div class="explanation-icon">
+              <i class="bi bi-lightbulb"></i>
+            </div>
+            <div>
+              <h2 class="explanation-title">Neural Networks</h2>
+              <p class="explanation-subtitle">Understanding the foundations of deep learning</p>
+            </div>
+          </div>
+          
+          <div class="explanation-content">
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-info-circle"></i> What are Neural Networks?
+              </h3>
+              <p>Neural networks are computing systems inspired by the biological neural networks in animal brains. They consist of artificial neurons organized in layers that can learn from data to perform tasks like classification, prediction, and pattern recognition.</p>
+              
+              <p>At their core, neural networks are mathematical models that map input data to output predictions through a series of transformations. The "neural" part of their name comes from their inspiration from how neurons work in the brain, although the similarity is fairly basic.</p>
+              
+              <div class="explanation-img">
+                <img src="{% static 'img/neural-network-diagram.svg' %}" alt="Neural Network Architecture" class="img-fluid">
+              </div>
+            </div>
+            
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-diagram-3"></i> Structure and Components
+              </h3>
+              <p>A neural network typically consists of:</p>
+              <ul>
+                <li><strong>Input Layer:</strong> Receives the initial data (features).</li>
+                <li><strong>Hidden Layers:</strong> Intermediate layers where most of the computation happens.</li>
+                <li><strong>Output Layer:</strong> Produces the final prediction or classification.</li>
+                <li><strong>Neurons:</strong> Individual units that process information.</li>
+                <li><strong>Weights and Biases:</strong> Parameters that are adjusted during training.</li>
+                <li><strong>Activation Functions:</strong> Functions that introduce non-linearity into the network.</li>
+              </ul>
+              
+              <div class="example-card">
+                <h4 class="example-card-title">Key Components Explained</h4>
+                <p><strong>Neurons:</strong> Each neuron receives input, applies weights and bias, then passes the result through an activation function.</p>
+                <p><strong>Weights:</strong> These determine the strength of connections between neurons. Learning involves adjusting these weights.</p>
+                <p><strong>Bias:</strong> An additional parameter that allows the model to fit better to the data by shifting the activation function.</p>
+                <p><strong>Activation Functions:</strong> These introduce non-linearity into the network, allowing it to learn complex patterns. Common examples include ReLU, Sigmoid, and Tanh.</p>
+              </div>
+            </div>
+            
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-gear"></i> How Neural Networks Work
+              </h3>
+              <p>Neural networks process data through the following steps:</p>
+              <ol>
+                <li><strong>Forward Propagation:</strong> Input data passes through the network, layer by layer, generating predictions.</li>
+                <li><strong>Loss Calculation:</strong> The difference between predictions and actual values is measured.</li>
+                <li><strong>Backpropagation:</strong> The error is propagated backwards through the network to calculate gradients.</li>
+                <li><strong>Weight Update:</strong> Weights are adjusted using an optimization algorithm (like gradient descent) to reduce error.</li>
+              </ol>
+              
+              <p>The mathematical representation of a neuron's operation is:</p>
+              
+              <div class="formula">
+                y = f(∑(w<sub>i</sub> * x<sub>i</sub>) + b)
+              </div>
+              
+              <p>Where:</p>
+              <ul>
+                <li>x<sub>i</sub> are the inputs</li>
+                <li>w<sub>i</sub> are the weights</li>
+                <li>b is the bias</li>
+                <li>f is the activation function</li>
+                <li>y is the output</li>
+              </ul>
+            </div>
+            
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-code-slash"></i> Implementation Example
+              </h3>
+              <p>Here's a simple implementation of a neural network using Python and TensorFlow:</p>
+              
+              <div class="code-block">
+                <div class="code-block-header">
+                  <button class="code-block-copy">
+                    <i class="bi bi-clipboard"></i> Copy
+                  </button>
+                </div>
+<pre>import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+# Create a simple neural network
+model = Sequential([
+    # Input layer with 10 neurons and ReLU activation
+    Dense(10, activation='relu', input_shape=(8,)),
+    
+    # Hidden layer with 8 neurons and ReLU activation
+    Dense(8, activation='relu'),
+    
+    # Output layer with 1 neuron and sigmoid activation
+    Dense(1, activation='sigmoid')
+])
+
+# Compile the model
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Summary of the model architecture
+model.summary()</pre>
+              </div>
+              
+              <p>This code creates a simple neural network with an input layer, one hidden layer, and an output layer designed for binary classification.</p>
+            </div>
+            
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-link-45deg"></i> Real-World Applications
+              </h3>
+              <p>Neural networks are used in numerous applications:</p>
+              <ul>
+                <li><strong>Image Recognition:</strong> Identifying objects, people, and scenes in images.</li>
+                <li><strong>Natural Language Processing:</strong> Language translation, sentiment analysis, and text generation.</li>
+                <li><strong>Speech Recognition:</strong> Converting spoken language to text.</li>
+                <li><strong>Recommendation Systems:</strong> Suggesting products, movies, or content based on user preferences.</li>
+                <li><strong>Medical Diagnosis:</strong> Detecting diseases from medical images or patient data.</li>
+                <li><strong>Financial Forecasting:</strong> Predicting stock prices or detecting fraud.</li>
+              </ul>
+            </div>
+            
+            <div class="explanation-section">
+              <h3 class="explanation-section-title">
+                <i class="bi bi-signpost-split"></i> Related Topics
+              </h3>
+              <p>If you're interested in neural networks, you might want to explore these related concepts:</p>
+              
+              <div class="related-topics">
+                <a href="#" class="related-topic-tag">Deep Learning</a>
+                <a href="#" class="related-topic-tag">Convolutional Neural Networks</a>
+                <a href="#" class="related-topic-tag">Recurrent Neural Networks</a>
+                <a href="#" class="related-topic-tag">Backpropagation</a>
+                <a href="#" class="related-topic-tag">Activation Functions</a>
+                <a href="#" class="related-topic-tag">Gradient Descent</a>
+                <a href="#" class="related-topic-tag">Overfitting</a>
+              </div>
+            </div>
+            
+            <!-- Feedback Controls -->
+            <div class="feedback-controls">
+              <button class="feedback-btn feedback-helpful">
+                <i class="bi bi-hand-thumbs-up"></i> Helpful
+              </button>
+              <button class="feedback-btn feedback-simpler">
+                <i class="bi bi-arrow-down-circle"></i> Explain Simpler
+              </button>
+              <button class="feedback-btn feedback-more">
+                <i class="bi bi-arrow-up-circle"></i> More Advanced
+              </button>
+              <button class="feedback-btn">
+                <i class="bi bi-chat-dots"></i> Ask Follow-up
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const conceptForm = document.getElementById('conceptForm');
+    const conceptInput = document.getElementById('conceptInput');
+    const explanationSection = document.getElementById('explanationSection');
+    const topicSuggestions = document.querySelectorAll('.topic-suggestion');
+    
+    // Form submission
+    conceptForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const concept = conceptInput.value.trim();
+      if (concept) {
+        // In a real implementation, this would make an API call
+        // For now, we'll just show the example explanation
+        showExplanation();
+      }
+    });
+    
+    // Topic suggestion clicks
+    topicSuggestions.forEach(suggestion => {
+      suggestion.addEventListener('click', function() {
+        const concept = this.getAttribute('data-concept');
+        conceptInput.value = concept;
+        showExplanation();
+      });
+    });
+    
+    // Copy code button
+    const copyButtons = document.querySelectorAll('.code-block-copy');
+    copyButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const codeBlock = this.closest('.code-block');
+        const code = codeBlock.querySelector('pre').innerText;
+        
+        navigator.clipboard.writeText(code).then(() => {
+          // Change button text temporarily
+          const originalText = this.innerHTML;
+          this.innerHTML = '<i class="bi bi-check"></i> Copied!';
+          
+          setTimeout(() => {
+            this.innerHTML = originalText;
+          }, 2000);
+        });
+      });
+    });
+    
+    // Feedback buttons
+    const feedbackButtons = document.querySelectorAll('.feedback-btn');
+    feedbackButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // In a real implementation, this would send feedback to the server
+        // For demo purposes, just show a toast or alert
+        alert('Thank you for your feedback! We\'ll use it to improve our explanations.');
+      });
+    });
+    
+    // Function to show explanation
+    function showExplanation() {
+      // In a real implementation, this would load the explanation from an API
+      // For demo purposes, we'll just show the hidden section
+      explanationSection.classList.add('active');
+      
+      // Scroll to explanation
+      explanationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+</script>
+{% endblock %}

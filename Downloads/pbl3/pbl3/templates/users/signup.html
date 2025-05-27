@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - SkillForge{% endblock %}
+
+{% block content %}
+<div class="auth-form-container animate-fade-in">
+    <div class="auth-form">
+        <div class="auth-form-header">
+            <h2>Create an Account</h2>
+            <p class="text-muted">Join SkillForge to start your learning journey</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <p>There were some errors with your form submission:</p>
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+            
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                {{ form.username.errors }}
+                <input type="text" name="username" id="id_username" class="form-control" required {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Password</label>
+                {{ form.password1.errors }}
+                <input type="password" name="password1" id="id_password1" class="form-control" required>
+                <div class="form-text">
+                    Your password must contain at least 8 characters and can't be entirely numeric.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirm Password</label>
+                {{ form.password2.errors }}
+                <input type="password" name="password2" id="id_password2" class="form-control" required>
+            </div>
+            
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div>
+        </form>
+        
+        <div class="auth-form-footer">
+            <p>Already have an account? <a href="{% url 'account_login' %}">Log In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

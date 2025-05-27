@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SkillForge | Next-Generation AI-Driven Learning Platform{% endblock %}
+
+{% block content %}
+<!-- Enhanced Hero Section with Animated Elements -->
+<div class="hero-wrapper position-relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="hero-bg-element hero-bg-1"></div>
+    <div class="hero-bg-element hero-bg-2"></div>
+    <div class="hero-bg-element hero-bg-3"></div>
+    
+    <header class="hero py-7">
+        <div class="container position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content animate-slide-up">
+                    <span class="badge badge-pill badge-primary mb-3 animate-pulse-subtle">AI-Powered Learning</span>
+                    <h1 class="hero-title mb-4">Master New <span class="text-gradient">Skills</span> with AI-Driven Personalized Learning</h1>
+                    <p class="hero-subtitle mb-4">SkillForge uses advanced AI to analyze your learning patterns and create a personalized experience that adapts to your unique style, pace, and goals.</p>
+                    <div class="hero-cta d-flex flex-wrap gap-3 mb-5">
+                        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg btn-icon btn-rounded animate-bounce-subtle">
+                            <i class="bi bi-rocket"></i> Get Started Free
+                        </a>
+                        <a href="#features" class="btn btn-outline-primary btn-lg btn-icon btn-rounded">
+                            <i class="bi bi-info-circle"></i> Explore Features
+                        </a>
+                    </div>
+                    
+                    <!-- Trust indicators -->
+                    <div class="d-flex align-items-center gap-4 trust-indicators">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-people-fill me-2 text-primary"></i>
+                            <span>30K+ Students</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-star-fill me-2 text-warning"></i>
+                            <span>4.9/5 Rating</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-check me-2 text-success"></i>
+                            <span>100% Secure</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 d-none d-lg-block animate-float position-relative">
+                    <!-- Main hero image with floating effect -->
+                    <img src="{% static 'img/hero-illustration.svg' %}" alt="AI Learning Platform" class="img-fluid hero-image">
+                    
+                    <!-- Floating cards around the main image -->
+                    <div class="floating-card floating-card-1 d-flex align-items-center shadow-lg">
+                        <div class="floating-card-icon bg-success-soft rounded-circle me-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Smart Learning Paths</h6>
+                            <span class="small text-muted">Adaptive to your pace</span>
+                        </div>
+                    </div>
+                    
+                    <div class="floating-card floating-card-2 d-flex align-items-center shadow-lg">
+                        <div class="floating-card-icon bg-primary-soft rounded-circle me-2">
+                            <i class="bi bi-mortarboard-fill text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">100+ Premium Courses</h6>
+                            <span class="small text-muted">Expert instructors</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<!-- Platform Stats Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="stats-wrapper bg-white rounded-4 shadow-lg p-4 p-lg-5 position-relative" style="margin-top: -80px; z-index: 10;">
+            <div class="row text-center">
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <div class="stat-item animate-count">
+                        <h2 class="display-5 fw-bold text-gradient">30K+</h2>
+                        <p class="text-muted mb-0">Active Students</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <div class="stat-item animate-count">
+                        <h2 class="display-5 fw-bold text-gradient">250+</h2>
+                        <p class="text-muted mb-0">Premium Courses</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item animate-count">
+                        <h2 class="display-5 fw-bold text-gradient">95%</h2>
+                        <p class="text-muted mb-0">Completion Rate</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item animate-count">
+                        <h2 class="display-5 fw-bold text-gradient">45+</h2>
+                        <p class="text-muted mb-0">Industry Partners</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Floating Shapes -->
+<div class="position-relative">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+
+    <!-- Enhanced Features Section -->
+    <section id="features" class="py-6 bg-light position-relative overflow-hidden">
+        <!-- Decorative elements -->
+        <div class="decorative-blob blob-1"></div>
+        <div class="decorative-blob blob-2"></div>
+        
+        <div class="container position-relative">
+            <div class="text-center mb-5 animate-fade-in">
+                <span class="badge badge-pill badge-outline-primary mb-3">Powerful Platform</span>
+                <h2 class="section-title fw-bold mb-3">Why Students <span class="text-gradient">Love</span> SkillForge</h2>
+                <p class="section-subtitle">Experience the future of education with our AI-powered features</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4 animate-fade-in delay-100">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h3 class="feature-title">AI-Powered Learning</h3>
+                        <p class="feature-description">Our AI analyzes your learning patterns to create personalized learning paths that adapt to your pace and style.</p>
+                        <a href="#" class="feature-link">Learn how it works <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 animate-fade-in delay-200">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+                        <h3 class="feature-title">24/7 AI Tutor Support</h3>
+                        <p class="feature-description">Get instant answers to your questions with our GPT-powered AI tutor that's always ready to help solve your doubts.</p>
+                        <a href="#" class="feature-link">See it in action <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 animate-fade-in delay-300">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+                        <h3 class="feature-title">Gamified Learning</h3>
+                        <p class="feature-description">Earn XP, unlock achievements, and climb leaderboards as you make progress through courses and interactive quizzes.</p>
+                        <a href="#" class="feature-link">View achievements <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 animate-fade-in delay-400">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <h3 class="feature-title">Blockchain Certificates</h3>
+                        <p class="feature-description">Receive tamper-proof blockchain-verified certificates that provide credible proof of your achievements to employers.</p>
+                        <a href="#" class="feature-link">Certificate verification <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 animate-fade-in delay-500">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h3 class="feature-title">Peer Mentorship</h3>
+                        <p class="feature-description">Connect with peers and mentors to collaborate, learn together, and receive guidance on your learning journey.</p>
+                        <a href="#" class="feature-link">Find a mentor <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 animate-fade-in delay-600">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-translate"></i>
+                        </div>
+                        <h3 class="feature-title">Multi-language Support</h3>
+                        <p class="feature-description">Learn in your preferred language with full support for English, Hindi, and Kannada content and interfaces.</p>
+                        <a href="#" class="feature-link">Language options <i class="bi bi-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials-section py-6 bg-white position-relative">
+        <div class="container">
+            <div class="text-center mb-5 animate-fade-in">
+                <span class="badge badge-pill badge-outline-primary mb-3">Success Stories</span>
+                <h2 class="section-title fw-bold mb-3">What Our <span class="text-gradient">Students</span> Are Saying</h2>
+                <p class="section-subtitle">Join thousands of satisfied learners who have transformed their careers</p>
+            </div>
+            
+            <div class="testimonials-wrapper position-relative">
+                <div class="row g-4">
+                    <div class="col-md-4 animate-fade-in delay-100">
+                        <div class="testimonial-card">
+                            <div class="testimonial-rating mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <p class="testimonial-text mb-4">"The AI tutor was a game-changer for me. Whenever I got stuck, it guided me through complex concepts with personalized explanations that made everything click."</p>
+                            <div class="testimonial-author d-flex align-items-center">
+                                <div class="testimonial-avatar">
+                                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Priya Sharma" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-0 fw-bold">Priya Sharma</h5>
+                                    <p class="mb-0 text-muted small">Data Science Student</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 animate-fade-in delay-200">
+                        <div class="testimonial-card highlighted">
+                            <div class="testimonial-rating mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <p class="testimonial-text mb-4">"I've tried many platforms, but SkillForge's personalized learning paths are unmatched. The gamification elements kept me motivated, and I completed my full-stack certification in record time!"</p>
+                            <div class="testimonial-author d-flex align-items-center">
+                                <div class="testimonial-avatar">
+                                    <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Rahul Patel" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-0 fw-bold">Rahul Patel</h5>
+                                    <p class="mb-0 text-muted small">Software Engineer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 animate-fade-in delay-300">
+                        <div class="testimonial-card">
+                            <div class="testimonial-rating mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <p class="testimonial-text mb-4">"The blockchain certificates have given me a competitive edge in job interviews. Employers are impressed with the verifiable credentials and the comprehensive skills I've gained on SkillForge."</p>
+                            <div class="testimonial-author d-flex align-items-center">
+                                <div class="testimonial-avatar">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Lakshmi Krishnan" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-0 fw-bold">Lakshmi Krishnan</h5>
+                                    <p class="mb-0 text-muted small">UI/UX Designer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Curved Divider SVG -->
+<div class="curved-divider">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#f8f9fa" fill-opacity="1" d="M0,64L48,58.7C96,53,192,43,288,48C384,53,480,75,576,80C672,85,768,75,864,64C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+    </svg>
+</div>
+
+<!-- How It Works Section -->
+<section class="py-5 position-relative">
+    <!-- Decorative elements -->
+    <div class="decorative-circle circle-lg"></div>
+    <div class="decorative-circle circle-sm"></div>
+    
+    <div class="container">
+        <div class="text-center mb-5 animate-fade-in">
+            <h2 class="fw-bold">How SkillForge Works</h2>
+            <p class="lead text-muted">A simple process to transform your learning experience</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4 animate-fade-in delay-100">
+                <div class="text-center p-3 process-card">
+                    <div class="badge-level mb-3">1</div>
+                    <h3 class="h4 mb-3">Create Your Profile</h3>
+                    <p class="text-muted">Sign up and complete your profile with your interests, goals, and learning preferences.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 animate-fade-in delay-200">
+                <div class="text-center p-3 process-card">
+                    <div class="badge-level mb-3">2</div>
+                    <h3 class="h4 mb-3">Get Recommendations</h3>
+                    <p class="text-muted">Our AI analyzes your profile to recommend personalized courses and learning paths.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 animate-fade-in delay-300">
+                <div class="text-center p-3 process-card">
+                    <div class="badge-level mb-3">3</div>
+                    <h3 class="h4 mb-3">Learn & Advance</h3>
+                    <p class="text-muted">Complete courses, earn certificates, and track your progress on your interactive dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section with Background Pattern -->
+<section class="py-5 bg-primary text-white position-relative overflow-hidden">
+    <!-- Decorative dots -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: radial-gradient(#ffffff33 1px, transparent 1px); background-size: 20px 20px;"></div>
+    
+    <div class="container text-center py-4 animate-fade-in position-relative">
+        <h2 class="fw-bold mb-3">Ready to Transform Your Learning Experience?</h2>
+        <p class="lead mb-4">Join thousands of learners who have already enhanced their skills with SkillForge.</p>
+        <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg px-5 pulse-animation">Get Started Today</a>
+    </div>
+</section>
+{% endblock %}

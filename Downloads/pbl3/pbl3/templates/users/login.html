@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In - SkillForge{% endblock %}
+
+{% block content %}
+<div class="auth-form-container animate-fade-in">
+    <div class="auth-form">
+        <div class="auth-form-header">
+            <h2>Welcome Back</h2>
+            <p class="text-muted">Log in to continue your learning journey</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <p>Your username and password didn't match. Please try again.</p>
+                </div>
+            {% endif %}
+            
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="remember" class="form-check-input" id="remember-me">
+                <label class="form-check-label" for="remember-me">Remember me</label>
+            </div>
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        </form>
+        
+        <div class="auth-form-footer">
+            <p>Don't have an account? <a href="{% url 'account_signup' %}">Sign Up</a></p>
+            <p><a href="#">Forgot Password?</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50" viewBox="0 0 200 50">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="100%" stop-color="#2ec4b6" />
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path fill="url(#gradient)" d="M30,10 L40,10 L40,40 L30,40 L30,10 Z M10,20 L20,10 L25,10 L25,40 L15,40 L15,20 L10,25 L5,20 L5,40 L0,40 L0,10 L5,10 L10,20 Z" />
+    <text x="50" y="30" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#2d3748">
+      SkillForge
+    </text>
+  </g>
+</svg>

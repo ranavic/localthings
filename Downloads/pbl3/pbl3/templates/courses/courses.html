@@ -1,0 +1,640 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SkillForge | Explore Courses{% endblock %}
+
+{% block content %}
+<!-- Courses Header -->
+<div class="courses-header py-5 mb-5 text-center position-relative overflow-hidden">
+    <img src="{% static 'img/backgrounds/courses-bg.svg' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: -1; object-fit: cover;">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white mb-3">Explore AI-Enhanced Courses</h1>
+        <p class="lead text-white-50 mb-4">Discover personalized learning experiences tailored to your skills and goals</p>
+        <div class="search-container mx-auto">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search courses, skills, or topics...">
+                <button class="btn btn-light" type="button"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="course-shape-1"></div>
+    <div class="course-shape-2"></div>
+</div>
+
+<!-- Course Categories -->
+<div class="container mb-5">
+    <div class="categories-container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-purple-soft">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <h6 class="mb-0">Programming</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-teal-soft">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+                    <h6 class="mb-0">Data Science</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-orange-soft">
+                        <i class="bi bi-phone"></i>
+                    </div>
+                    <h6 class="mb-0">Mobile Dev</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-blue-soft">
+                        <i class="bi bi-palette"></i>
+                    </div>
+                    <h6 class="mb-0">Design</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-green-soft">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <h6 class="mb-0">Finance</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="category-item text-center">
+                    <div class="category-icon mb-3 bg-red-soft">
+                        <i class="bi bi-megaphone"></i>
+                    </div>
+                    <h6 class="mb-0">Marketing</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Courses -->
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold">Recommended For You</h2>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Sort by: Popular
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Popular</a></li>
+                <li><a class="dropdown-item" href="#">Newest</a></li>
+                <li><a class="dropdown-item" href="#">Highest Rated</a></li>
+                <li><a class="dropdown-item" href="#">Beginner Friendly</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Course Card 1 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="{% static 'img/courses/ai-fundamentals.svg' %}" alt="AI Fundamentals" class="img-fluid rounded-top">
+                    <div class="course-level">Beginner</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Artificial Intelligence</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">AI Fundamentals: From Zero to Hero</h4>
+                    <p class="course-description text-muted mb-3">Learn the core concepts of artificial intelligence and machine learning with hands-on projects.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>Dr. Alex Morgan</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-primary fw-bold">Free</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 2 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="{% static 'img/courses/web-development.svg' %}" alt="Web Development" class="img-fluid rounded-top">
+                    <div class="course-level">Intermediate</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Web Development</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.9</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">Full-Stack JavaScript Development</h4>
+                    <p class="course-description text-muted mb-3">Master modern JavaScript frameworks and build responsive, dynamic web applications.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>Sarah Johnson</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-decoration-line-through text-muted me-2">$89.99</span>
+                            <span class="text-primary fw-bold">$49.99</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 3 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="{% static 'img/courses/data-science.svg' %}" alt="Data Science" class="img-fluid rounded-top">
+                    <div class="course-level">Advanced</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Data Science</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.7</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">Advanced Data Analysis with Python</h4>
+                    <p class="course-description text-muted mb-3">Deep dive into data analysis with Python, pandas, NumPy, and visualization libraries.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>Michael Chen</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-primary fw-bold">$59.99</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 4 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="https://via.placeholder.com/400x225?text=UX+Design" alt="UX Design" class="img-fluid rounded-top">
+                    <div class="course-level">Beginner</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Design</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.6</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">UX/UI Design Fundamentals</h4>
+                    <p class="course-description text-muted mb-3">Learn the principles of user experience design and create user-centered digital products.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>Emily Parker</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-primary fw-bold">$39.99</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 5 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="https://via.placeholder.com/400x225?text=Mobile+Development" alt="Mobile Development" class="img-fluid rounded-top">
+                    <div class="course-level">Intermediate</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Mobile Development</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">Flutter for Mobile App Development</h4>
+                    <p class="course-description text-muted mb-3">Build beautiful native apps for iOS and Android using Google's Flutter framework.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>Ryan Lewis</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-decoration-line-through text-muted me-2">$79.99</span>
+                            <span class="text-primary fw-bold">$44.99</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 6 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                <div class="course-image position-relative">
+                    <img src="https://via.placeholder.com/400x225?text=Blockchain" alt="Blockchain" class="img-fluid rounded-top">
+                    <div class="course-level">Advanced</div>
+                </div>
+                <div class="course-content p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="course-category">Blockchain</span>
+                        <div class="course-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span>4.5</span>
+                        </div>
+                    </div>
+                    <h4 class="course-title mb-2">Blockchain Development Masterclass</h4>
+                    <p class="course-description text-muted mb-3">Learn to build and deploy decentralized applications using blockchain technology.</p>
+                    <div class="course-meta d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/32x32" alt="Instructor" class="rounded-circle me-2">
+                            <span>David Kim</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="text-primary fw-bold">$69.99</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="course-footer d-grid">
+                    <a href="#" class="btn btn-primary">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <button class="btn btn-outline-primary">Load More Courses</button>
+    </div>
+</div>
+
+<!-- AI Learning Path Section -->
+<section class="ai-path-section my-5 py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h2 class="fw-bold mb-3">AI-Crafted Learning Paths</h2>
+                <p class="lead mb-4">Our AI analyzes your skills, goals, and learning style to create personalized learning paths that adapt as you progress.</p>
+                <div class="path-features mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="path-icon me-3">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0">Skill Gap Analysis</h5>
+                            <p class="mb-0 text-muted">Identifies your current skills and what you need to learn</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="path-icon me-3">
+                            <i class="bi bi-signpost-split"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0">Adaptive Progression</h5>
+                            <p class="mb-0 text-muted">Adjusts difficulty based on your performance</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="path-icon me-3">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0">Optimized Schedule</h5>
+                            <p class="mb-0 text-muted">Creates a learning schedule that fits your availability</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary">Create Your Learning Path</a>
+            </div>
+            <div class="col-md-6">
+                <img src="{% static 'img/ai-learning-path.svg' %}" alt="AI Learning Path" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Instructor Spotlight -->
+<div class="container my-5">
+    <h2 class="text-center fw-bold mb-5">Featured Instructors</h2>
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="instructor-card text-center">
+                <div class="instructor-image mx-auto mb-3">
+                    <img src="https://via.placeholder.com/150x150" alt="Instructor" class="rounded-circle">
+                </div>
+                <h4 class="mb-1">Dr. Alex Morgan</h4>
+                <p class="text-muted mb-2">AI & Machine Learning Expert</p>
+                <div class="instructor-rating mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span class="ms-1">4.9</span>
+                </div>
+                <p class="small mb-3">PhD in Computer Science with 10+ years experience at Google AI Research</p>
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary me-2">View Profile</a>
+                    <a href="#" class="btn btn-sm btn-primary">Courses</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="instructor-card text-center">
+                <div class="instructor-image mx-auto mb-3">
+                    <img src="https://via.placeholder.com/150x150" alt="Instructor" class="rounded-circle">
+                </div>
+                <h4 class="mb-1">Sarah Johnson</h4>
+                <p class="text-muted mb-2">Web Development Instructor</p>
+                <div class="instructor-rating mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span class="ms-1">4.8</span>
+                </div>
+                <p class="small mb-3">Senior Developer at Amazon with expertise in JavaScript and frontend frameworks</p>
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary me-2">View Profile</a>
+                    <a href="#" class="btn btn-sm btn-primary">Courses</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="instructor-card text-center">
+                <div class="instructor-image mx-auto mb-3">
+                    <img src="https://via.placeholder.com/150x150" alt="Instructor" class="rounded-circle">
+                </div>
+                <h4 class="mb-1">Michael Chen</h4>
+                <p class="text-muted mb-2">Data Science Specialist</p>
+                <div class="instructor-rating mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-half text-warning"></i>
+                    <span class="ms-1">4.7</span>
+                </div>
+                <p class="small mb-3">Lead Data Scientist at Netflix with focus on predictive analytics and ML</p>
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary me-2">View Profile</a>
+                    <a href="#" class="btn btn-sm btn-primary">Courses</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="instructor-card text-center">
+                <div class="instructor-image mx-auto mb-3">
+                    <img src="https://via.placeholder.com/150x150" alt="Instructor" class="rounded-circle">
+                </div>
+                <h4 class="mb-1">Emily Parker</h4>
+                <p class="text-muted mb-2">UX/UI Design Expert</p>
+                <div class="instructor-rating mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-half text-warning"></i>
+                    <span class="ms-1">4.6</span>
+                </div>
+                <p class="small mb-3">Design Lead at Adobe with 12+ years experience in UI/UX and product design</p>
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary me-2">View Profile</a>
+                    <a href="#" class="btn btn-sm btn-primary">Courses</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Courses Header Styling */
+    .courses-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .search-container {
+        max-width: 600px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .course-shape-1 {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+    }
+    
+    .course-shape-2 {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        bottom: -50px;
+        left: -50px;
+    }
+    
+    /* Category Styling */
+    .category-item {
+        padding: 1rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .category-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .category-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto;
+    }
+    
+    .bg-purple-soft {
+        background-color: rgba(124, 58, 237, 0.1);
+        color: var(--primary);
+    }
+    
+    .bg-teal-soft {
+        background-color: rgba(20, 184, 166, 0.1);
+        color: var(--secondary);
+    }
+    
+    .bg-orange-soft {
+        background-color: rgba(249, 115, 22, 0.1);
+        color: var(--accent);
+    }
+    
+    .bg-blue-soft {
+        background-color: rgba(14, 165, 233, 0.1);
+        color: var(--info);
+    }
+    
+    .bg-green-soft {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+    
+    .bg-red-soft {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+    }
+    
+    /* Course Card Styling */
+    .course-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        background-color: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .course-content {
+        flex: 1;
+    }
+    
+    .course-image {
+        overflow: hidden;
+    }
+    
+    .course-level {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(124, 58, 237, 0.9);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .course-category {
+        color: var(--primary);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .course-rating {
+        color: #FFB400;
+        font-weight: 600;
+    }
+    
+    .course-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+    
+    .course-footer {
+        padding: 1rem;
+        border-top: 1px solid #f1f1f1;
+    }
+    
+    /* AI Path Section */
+    .ai-path-section {
+        background-color: rgba(124, 58, 237, 0.03);
+        position: relative;
+    }
+    
+    .path-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        border-radius: 10px;
+        background-color: rgba(124, 58, 237, 0.1);
+        color: var(--primary);
+    }
+    
+    /* Instructor Card */
+    .instructor-card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .instructor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .instructor-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid var(--primary);
+        padding: 3px;
+    }
+</style>
+{% endblock %}

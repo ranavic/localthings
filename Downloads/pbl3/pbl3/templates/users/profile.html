@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - SkillForge{% endblock %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="profile-card mb-4">
+        <div class="profile-header text-center">
+            <img src="https://via.placeholder.com/150" alt="{{ user.username }}" class="profile-avatar mb-3">
+            <h3 class="mb-1">{{ user.username }}</h3>
+            <p class="text-white-50">{{ user.email }}</p>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 mx-auto">
+                    <div class="profile-stats mb-4 row">
+                        <div class="col profile-stat-item">
+                            <div class="profile-stat-value">1</div>
+                            <div class="profile-stat-label">Courses</div>
+                        </div>
+                        <div class="col profile-stat-item">
+                            <div class="profile-stat-value">0</div>
+                            <div class="profile-stat-label">Certificates</div>
+                        </div>
+                        <div class="col profile-stat-item">
+                            <div class="profile-stat-value">0</div>
+                            <div class="profile-stat-label">XP</div>
+                        </div>
+                        <div class="col profile-stat-item">
+                            <div class="profile-stat-value">1</div>
+                            <div class="profile-stat-label">Level</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container pb-4">
+            <div class="row">
+                <div class="col-md-10 mx-auto">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header d-flex justify-content-between align-items-center">
+                            <h4 class="m-0">Profile Information</h4>
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <h6 class="text-muted mb-1">Full Name</h6>
+                                    <p class="mb-0">{{ user.first_name }} {{ user.last_name|default:"Not set" }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted mb-1">Username</h6>
+                                    <p class="mb-0">{{ user.username }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted mb-1">Email</h6>
+                                    <p class="mb-0">{{ user.email }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6 class="text-muted mb-1">Date Joined</h6>
+                                    <p class="mb-0">{{ user.date_joined|date:"F j, Y" }}</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <h6 class="text-muted mb-1">Bio</h6>
+                                    <p class="mb-0">
+                                        {% if user.profile.bio %}
+                                            {{ user.profile.bio }}
+                                        {% else %}
+                                            Add a bio to tell others about yourself.
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h4 class="m-0">Learning Progress</h4>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <p class="mb-2">Overall Progress</p>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="text-muted mt-3">Start your learning journey by enrolling in courses.</p>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-primary">Explore Courses</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

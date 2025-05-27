@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Logged Out - SkillForge{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">You've been logged out</h2>
+                    <p class="mb-4">Thank you for using SkillForge. You have been successfully logged out of your account.</p>
+                    <div class="d-grid">
+                        <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg">Log In Again</a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="/" class="text-decoration-none">Return to Home Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

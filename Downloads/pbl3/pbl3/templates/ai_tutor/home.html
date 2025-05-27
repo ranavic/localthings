@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Tutor | SkillForge{% endblock %}
+
+{% block extra_css %}
+<style>
+  .ai-tutor-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    padding: 5rem 0 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ai-tutor-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  
+  .feature-benefit-card {
+    border-radius: 16px;
+    background-color: white;
+    box-shadow: var(--shadow-lg);
+    padding: 2.5rem;
+    height: 100%;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .feature-benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .feature-benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  }
+  
+  .feature-benefit-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-size: 2rem;
+  }
+  
+  .quick-actions {
+    position: relative;
+    margin-top: -100px;
+    z-index: 10;
+  }
+  
+  .ai-benefit-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .ai-benefit-list li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  
+  .ai-benefit-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+  
+  .course-topics {
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: thin;
+  }
+  
+  .topic-card {
+    min-width: 250px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast);
+  }
+  
+  .topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- AI Tutor Header Section -->
+<header class="ai-tutor-header text-white position-relative">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 animate-fade-in">
+        <span class="badge badge-pill badge-light mb-3">AI-Powered Learning</span>
+        <h1 class="display-4 fw-bold mb-4">Your Personal AI Tutor</h1>
+        <p class="lead mb-4">Get instant help, explanations, and practice with our advanced AI tutor. It adapts to your learning style and helps you master any concept at your own pace.</p>
+        <div class="d-flex flex-wrap gap-3 mb-3">
+          <a href="{% url 'ai_tutor:chat' %}" class="btn btn-light btn-lg btn-icon">
+            <i class="bi bi-chat-dots-fill me-2"></i> Start Chatting
+          </a>
+          <a href="{% url 'ai_tutor:practice_problems' %}" class="btn btn-outline-light btn-lg btn-icon">
+            <i class="bi bi-lightning-charge me-2"></i> Practice Problems
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block text-center animate-fade-in delay-200">
+        <img src="{% static 'img/ai-tutor-illustration.svg' %}" alt="AI Tutor" class="img-fluid" style="max-height: 400px;">
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Quick Action Cards -->
+<section class="quick-actions">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-lg rounded-4 h-100">
+          <div class="card-body p-4 text-center">
+            <div class="feature-icon mb-3 mx-auto">
+              <i class="bi bi-chat-square-text"></i>
+            </div>
+            <h3 class="h4 mb-3">New Chat Session</h3>
+            <p class="text-muted mb-4">Start a fresh conversation with your AI tutor about any topic you're studying.</p>
+            <a href="{% url 'ai_tutor:chat' %}" class="btn btn-primary btn-lg w-100 btn-rounded">
+              Start New Chat
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card border-0 shadow-lg rounded-4 h-100">
+          <div class="card-body p-4 text-center">
+            <div class="feature-icon mb-3 mx-auto">
+              <i class="bi bi-book"></i>
+            </div>
+            <h3 class="h4 mb-3">Concept Explanation</h3>
+            <p class="text-muted mb-4">Get in-depth explanations on any concept or topic with visual aids and examples.</p>
+            <a href="{% url 'ai_tutor:explain_concept' %}" class="btn btn-primary btn-lg w-100 btn-rounded">
+              Explain a Concept
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card border-0 shadow-lg rounded-4 h-100">
+          <div class="card-body p-4 text-center">
+            <div class="feature-icon mb-3 mx-auto">
+              <i class="bi bi-journals"></i>
+            </div>
+            <h3 class="h4 mb-3">Previous Sessions</h3>
+            <p class="text-muted mb-4">Continue your previous learning sessions and review your conversation history.</p>
+            <a href="{% url 'ai_tutor:chat' %}" class="btn btn-primary btn-lg w-100 btn-rounded">
+              View Sessions
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features and Benefits -->
+<section class="py-6 my-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <span class="badge badge-pill badge-outline-primary mb-3">Intelligent Learning</span>
+        <h2 class="section-title mb-3">How the AI Tutor <span class="text-gradient">Helps You</span> Learn</h2>
+        <p class="lead text-muted">Our AI tutor combines advanced language models with educational expertise to provide you with a personalized learning experience.</p>
+      </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+      <div class="col-lg-6">
+        <div class="feature-benefit-card">
+          <div class="feature-benefit-icon">
+            <i class="bi bi-person-check"></i>
+          </div>
+          <h3 class="h4 mb-3">Personalized Learning</h3>
+          <p class="mb-4">The AI tutor adapts to your learning style, pace, and knowledge level to provide tailored explanations and practice problems.</p>
+          <ul class="ai-benefit-list">
+            <li>Remembers your learning history and preferences</li>
+            <li>Adjusts difficulty based on your performance</li>
+            <li>Provides explanations in ways that work best for you</li>
+            <li>Connects new concepts to ones you already understand</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="feature-benefit-card">
+          <div class="feature-benefit-icon">
+            <i class="bi bi-lightning"></i>
+          </div>
+          <h3 class="h4 mb-3">Instant Problem Solving</h3>
+          <p class="mb-4">Get step-by-step guidance through complex problems and receive instant feedback on your solutions.</p>
+          <ul class="ai-benefit-list">
+            <li>Detailed explanations of solution steps</li>
+            <li>Multiple approaches to solving the same problem</li>
+            <li>Hints that guide without giving away the answer</li>
+            <li>Customized practice problems to reinforce concepts</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="feature-benefit-card">
+          <div class="feature-benefit-icon">
+            <i class="bi bi-translate"></i>
+          </div>
+          <h3 class="h4 mb-3">Multilingual Support</h3>
+          <p class="mb-4">Learn in your preferred language with support for English, Hindi, and Kannada to make complex concepts more accessible.</p>
+          <ul class="ai-benefit-list">
+            <li>Seamless language switching during conversations</li>
+            <li>Technical terminology explained in your language</li>
+            <li>Cultural references that are relevant to you</li>
+            <li>Learning materials in multiple languages</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="feature-benefit-card">
+          <div class="feature-benefit-icon">
+            <i class="bi bi-graph-up"></i>
+          </div>
+          <h3 class="h4 mb-3">Progress Tracking</h3>
+          <p class="mb-4">Monitor your learning journey with detailed analytics and insights on your strengths and areas for improvement.</p>
+          <ul class="ai-benefit-list">
+            <li>Visual progress dashboards and learning analytics</li>
+            <li>Identification of knowledge gaps</li>
+            <li>Personalized study recommendations</li>
+            <li>Long-term retention tracking and spaced repetition</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="{% url 'ai_tutor:chat' %}" class="btn btn-primary btn-lg btn-icon btn-rounded">
+        <i class="bi bi-chat-dots-fill me-2"></i> Start Learning with AI
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Topics -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-lg-8">
+        <h2 class="fw-bold">Popular Topics to Explore</h2>
+        <p class="text-muted">Choose from these trending topics or ask about anything you're curious about.</p>
+      </div>
+    </div>
+    
+    <div class="course-topics">
+      <div class="d-flex gap-4 pb-3">
+        <a href="{% url 'ai_tutor:explain_concept' %}?topic=data-science" class="topic-card text-decoration-none">
+          <div class="card border-0">
+            <div class="card-img-top" style="height: 140px; background: linear-gradient(135deg, #4338ca, #0891b2); display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-graph-up-arrow text-white" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Data Science</h5>
+              <p class="text-muted small mb-0">Statistics, ML, Data Analysis</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="{% url 'ai_tutor:explain_concept' %}?topic=web-development" class="topic-card text-decoration-none">
+          <div class="card border-0">
+            <div class="card-img-top" style="height: 140px; background: linear-gradient(135deg, #4f46e5, #8b5cf6); display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-code-slash text-white" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Web Development</h5>
+              <p class="text-muted small mb-0">HTML, CSS, JavaScript, Frameworks</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="{% url 'ai_tutor:explain_concept' %}?topic=mathematics" class="topic-card text-decoration-none">
+          <div class="card border-0">
+            <div class="card-img-top" style="height: 140px; background: linear-gradient(135deg, #0891b2, #0ea5e9); display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-calculator text-white" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Mathematics</h5>
+              <p class="text-muted small mb-0">Algebra, Calculus, Statistics</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="{% url 'ai_tutor:explain_concept' %}?topic=machine-learning" class="topic-card text-decoration-none">
+          <div class="card border-0">
+            <div class="card-img-top" style="height: 140px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-robot text-white" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Machine Learning</h5>
+              <p class="text-muted small mb-0">Neural Networks, AI Algorithms</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="{% url 'ai_tutor:explain_concept' %}?topic=database-systems" class="topic-card text-decoration-none">
+          <div class="card border-0">
+            <div class="card-img-top" style="height: 140px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-database text-white" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Database Systems</h5>
+              <p class="text-muted small mb-0">SQL, NoSQL, Data Modeling</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white position-relative overflow-hidden">
+  <div class="container text-center py-4 position-relative">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="fw-bold mb-3">Ready to Accelerate Your Learning?</h2>
+        <p class="lead mb-4">Join thousands of students who are learning faster and more effectively with our AI tutor.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="{% url 'ai_tutor:chat' %}" class="btn btn-light btn-lg px-5 pulse-animation">
+            <i class="bi bi-chat-dots-fill me-2"></i> Start Chat
+          </a>
+          <a href="{% url 'ai_tutor:practice_problems' %}" class="btn btn-outline-light btn-lg px-5">
+            <i class="bi bi-lightning-charge me-2"></i> Practice Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Decorative elements -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: radial-gradient(#ffffff20 1px, transparent 1px); background-size: 20px 20px;"></div>
+</section>
+{% endblock %}

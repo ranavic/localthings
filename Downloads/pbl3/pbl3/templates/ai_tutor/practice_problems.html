@@ -1,0 +1,735 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Practice Problems | AI Tutor | SkillForge{% endblock %}
+
+{% block extra_css %}
+<style>
+  .practice-header {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+    padding: 3rem 0;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+  
+  .practice-container {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .topic-filter {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .topic-filter-item {
+    padding: 0.6rem 1.25rem;
+    border-radius: 30px;
+    background-color: var(--gray-100);
+    border: none;
+    white-space: nowrap;
+    font-weight: 500;
+    color: var(--gray-700);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+  
+  .topic-filter-item:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-900);
+  }
+  
+  .topic-filter-item.active {
+    background-color: var(--secondary-color);
+    color: white;
+  }
+  
+  .problem-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid var(--gray-200);
+  }
+  
+  .problem-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+  }
+  
+  .problem-header {
+    padding: 1rem 1.5rem;
+    background-color: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .problem-difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  
+  .difficulty-beginner {
+    color: #10b981;
+  }
+  
+  .difficulty-intermediate {
+    color: #f59e0b;
+  }
+  
+  .difficulty-advanced {
+    color: #ef4444;
+  }
+  
+  .problem-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+  }
+  
+  .problem-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .problem-description {
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .problem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .problem-tag {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+  }
+  
+  .problem-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .problem-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--gray-600);
+  }
+  
+  .problem-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .pagination {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .page-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-800);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+  
+  .page-item:hover {
+    background-color: var(--gray-100);
+    border-color: var(--gray-300);
+  }
+  
+  .page-item.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+  }
+  
+  .problem-detail-modal .modal-content {
+    border-radius: 16px;
+    border: none;
+    overflow: hidden;
+  }
+  
+  .problem-detail-header {
+    background-color: var(--gray-100);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  
+  .problem-solution-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+  }
+  
+  .hint-section {
+    background-color: var(--primary-light);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  
+  .hint-heading {
+    color: var(--primary-dark);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .solution-section {
+    background-color: var(--gray-100);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  
+  .solution-heading {
+    color: var(--gray-900);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .answer-input {
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    padding: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+    resize: vertical;
+    min-height: 100px;
+    transition: all var(--transition-fast);
+  }
+  
+  .answer-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    outline: none;
+  }
+  
+  .feedback-section {
+    margin-top: 2rem;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid transparent;
+  }
+  
+  .feedback-section.correct {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  
+  .feedback-section.incorrect {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+  
+  .feedback-heading {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .feedback-heading.correct {
+    color: var(--success-color);
+  }
+  
+  .feedback-heading.incorrect {
+    color: var(--danger-color);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Practice Problems Header -->
+<header class="practice-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-5 fw-bold mb-3">Practice Problems</h1>
+        <p class="lead mb-0">Test your knowledge with our AI-generated practice problems</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Problem List Container -->
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="practice-container">
+        <!-- Filters -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="fw-bold mb-0">Subject Areas</h5>
+            <div class="d-flex gap-2">
+              <select class="form-select form-select-sm">
+                <option>All Difficulties</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+              </select>
+              <select class="form-select form-select-sm">
+                <option>Most Recent</option>
+                <option>Most Popular</option>
+                <option>Highest Rated</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="topic-filter">
+            <button class="topic-filter-item active">All Topics</button>
+            <button class="topic-filter-item">Programming</button>
+            <button class="topic-filter-item">Mathematics</button>
+            <button class="topic-filter-item">Machine Learning</button>
+            <button class="topic-filter-item">Databases</button>
+            <button class="topic-filter-item">Web Development</button>
+            <button class="topic-filter-item">Data Science</button>
+            <button class="topic-filter-item">Algorithms</button>
+            <button class="topic-filter-item">Statistics</button>
+          </div>
+        </div>
+        
+        <!-- Problems Grid -->
+        <div class="row g-4">
+          <!-- Problem Card 1 -->
+          <div class="col-md-6">
+            <div class="problem-card">
+              <div class="problem-header">
+                <div class="problem-difficulty difficulty-beginner">
+                  <i class="bi bi-star-fill"></i> Beginner
+                </div>
+                <div class="problem-category">
+                  <span class="badge bg-primary">Python</span>
+                </div>
+              </div>
+              <div class="problem-body">
+                <h3 class="problem-title">String Manipulation: Palindrome Checker</h3>
+                <p class="problem-description">Write a function that checks if a given string is a palindrome (reads the same forwards and backwards), ignoring spaces, punctuation, and capitalization.</p>
+                <div class="problem-tags">
+                  <span class="problem-tag">Strings</span>
+                  <span class="problem-tag">Algorithms</span>
+                  <span class="problem-tag">Python</span>
+                </div>
+              </div>
+              <div class="problem-footer">
+                <div class="problem-stats">
+                  <div class="problem-stat">
+                    <i class="bi bi-people"></i> 254
+                  </div>
+                  <div class="problem-stat">
+                    <i class="bi bi-hand-thumbs-up"></i> 89%
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#problemDetailModal">
+                  Solve Problem
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Problem Card 2 -->
+          <div class="col-md-6">
+            <div class="problem-card">
+              <div class="problem-header">
+                <div class="problem-difficulty difficulty-intermediate">
+                  <i class="bi bi-star-fill"></i> Intermediate
+                </div>
+                <div class="problem-category">
+                  <span class="badge bg-success">Mathematics</span>
+                </div>
+              </div>
+              <div class="problem-body">
+                <h3 class="problem-title">Calculus: Find the Derivative</h3>
+                <p class="problem-description">Find the derivative of the function f(x) = 3x⁴ + 2x³ - 5x² + 7x - 9 with respect to x. Show your work step by step.</p>
+                <div class="problem-tags">
+                  <span class="problem-tag">Calculus</span>
+                  <span class="problem-tag">Derivatives</span>
+                  <span class="problem-tag">Polynomials</span>
+                </div>
+              </div>
+              <div class="problem-footer">
+                <div class="problem-stats">
+                  <div class="problem-stat">
+                    <i class="bi bi-people"></i> 187
+                  </div>
+                  <div class="problem-stat">
+                    <i class="bi bi-hand-thumbs-up"></i> 92%
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#problemDetailModal">
+                  Solve Problem
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Problem Card 3 -->
+          <div class="col-md-6">
+            <div class="problem-card">
+              <div class="problem-header">
+                <div class="problem-difficulty difficulty-intermediate">
+                  <i class="bi bi-star-fill"></i> Intermediate
+                </div>
+                <div class="problem-category">
+                  <span class="badge bg-info">Machine Learning</span>
+                </div>
+              </div>
+              <div class="problem-body">
+                <h3 class="problem-title">Overfitting Prevention Techniques</h3>
+                <p class="problem-description">Explain three techniques to prevent overfitting in machine learning models and provide examples of when each would be most appropriate to use.</p>
+                <div class="problem-tags">
+                  <span class="problem-tag">Machine Learning</span>
+                  <span class="problem-tag">Overfitting</span>
+                  <span class="problem-tag">Regularization</span>
+                </div>
+              </div>
+              <div class="problem-footer">
+                <div class="problem-stats">
+                  <div class="problem-stat">
+                    <i class="bi bi-people"></i> 213
+                  </div>
+                  <div class="problem-stat">
+                    <i class="bi bi-hand-thumbs-up"></i> 85%
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#problemDetailModal">
+                  Solve Problem
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Problem Card 4 -->
+          <div class="col-md-6">
+            <div class="problem-card">
+              <div class="problem-header">
+                <div class="problem-difficulty difficulty-advanced">
+                  <i class="bi bi-star-fill"></i> Advanced
+                </div>
+                <div class="problem-category">
+                  <span class="badge bg-danger">Algorithms</span>
+                </div>
+              </div>
+              <div class="problem-body">
+                <h3 class="problem-title">Dynamic Programming: Longest Common Subsequence</h3>
+                <p class="problem-description">Implement an algorithm to find the longest common subsequence between two strings using dynamic programming. Analyze its time and space complexity.</p>
+                <div class="problem-tags">
+                  <span class="problem-tag">Dynamic Programming</span>
+                  <span class="problem-tag">Algorithms</span>
+                  <span class="problem-tag">Strings</span>
+                </div>
+              </div>
+              <div class="problem-footer">
+                <div class="problem-stats">
+                  <div class="problem-stat">
+                    <i class="bi bi-people"></i> 132
+                  </div>
+                  <div class="problem-stat">
+                    <i class="bi bi-hand-thumbs-up"></i> 79%
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#problemDetailModal">
+                  Solve Problem
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- More problem cards would go here -->
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <div class="pagination">
+            <div class="page-item"><i class="bi bi-chevron-left"></i></div>
+            <div class="page-item active">1</div>
+            <div class="page-item">2</div>
+            <div class="page-item">3</div>
+            <div class="page-item">4</div>
+            <div class="page-item">5</div>
+            <div class="page-item"><i class="bi bi-chevron-right"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Problem Detail Modal -->
+<div class="modal fade" id="problemDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content problem-detail-modal">
+      <div class="problem-detail-header">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="badge bg-primary px-3 py-2">Python</span>
+          <div class="problem-difficulty difficulty-beginner">
+            <i class="bi bi-star-fill"></i> Beginner
+          </div>
+        </div>
+        <h3 class="fw-bold mb-3">String Manipulation: Palindrome Checker</h3>
+        <div class="d-flex gap-3 text-muted small">
+          <div><i class="bi bi-people me-1"></i> 254 attempts</div>
+          <div><i class="bi bi-hand-thumbs-up me-1"></i> 89% success rate</div>
+          <div><i class="bi bi-clock me-1"></i> Avg. time: 12 mins</div>
+        </div>
+      </div>
+      
+      <div class="modal-body p-4">
+        <div class="problem-description-full">
+          <h5 class="fw-bold mb-3">Problem Description</h5>
+          <p>Write a function <code>is_palindrome(text)</code> that checks if a given string is a palindrome (reads the same forwards and backwards), ignoring spaces, punctuation, and capitalization.</p>
+          
+          <h6 class="fw-bold mt-4 mb-2">Examples:</h6>
+          <ul>
+            <li><code>is_palindrome("racecar")</code> should return <code>True</code></li>
+            <li><code>is_palindrome("A man, a plan, a canal: Panama")</code> should return <code>True</code></li>
+            <li><code>is_palindrome("hello world")</code> should return <code>False</code></li>
+          </ul>
+          
+          <h6 class="fw-bold mt-4 mb-2">Requirements:</h6>
+          <ul>
+            <li>Ignore all non-alphanumeric characters when determining if the string is a palindrome</li>
+            <li>Treat uppercase and lowercase letters as the same</li>
+            <li>Return <code>True</code> if the string is a palindrome, <code>False</code> otherwise</li>
+            <li>Empty strings and strings with only non-alphanumeric characters are considered palindromes</li>
+          </ul>
+          
+          <!-- Code Template -->
+          <div class="mt-4 p-3 bg-light rounded">
+            <pre class="mb-0"><code>def is_palindrome(text):
+    # Your code here
+    pass
+
+# Test your function
+print(is_palindrome("racecar"))  # Should print: True
+print(is_palindrome("A man, a plan, a canal: Panama"))  # Should print: True
+print(is_palindrome("hello world"))  # Should print: False</code></pre>
+          </div>
+          
+          <div class="mt-4">
+            <label for="solutionInput" class="form-label fw-bold">Your Solution:</label>
+            <textarea id="solutionInput" class="answer-input" rows="8" placeholder="Write your solution here..."></textarea>
+          </div>
+          
+          <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-outline-primary" id="hintButton">
+              <i class="bi bi-lightbulb me-2"></i> Get a Hint
+            </button>
+            <button class="btn btn-primary" id="checkSolutionButton">
+              <i class="bi bi-check-circle me-2"></i> Check Solution
+            </button>
+          </div>
+          
+          <!-- Hint Section (Initially Hidden) -->
+          <div class="hint-section mt-4" id="hintSection" style="display: none;">
+            <div class="hint-heading">
+              <i class="bi bi-lightbulb"></i> Hint
+            </div>
+            <p>Consider these steps to solve the problem:</p>
+            <ol>
+              <li>Remove all non-alphanumeric characters from the string</li>
+              <li>Convert the string to lowercase</li>
+              <li>Check if the resulting string reads the same forwards and backwards</li>
+            </ol>
+            <p>Remember that Python strings have useful methods like <code>isalnum()</code> to check if a character is alphanumeric, and you can use string slicing with negative indices to reverse a string.</p>
+          </div>
+          
+          <!-- Feedback Section (Initially Hidden) -->
+          <div class="feedback-section correct mt-4" id="correctFeedback" style="display: none;">
+            <div class="feedback-heading correct">
+              <i class="bi bi-check-circle"></i> Correct Solution!
+            </div>
+            <p>Great job! Your solution correctly identifies palindromes while ignoring capitalization, spaces, and punctuation.</p>
+            <p>Time complexity: O(n) where n is the length of the input string.</p>
+            <p>Space complexity: O(n) for storing the cleaned string.</p>
+          </div>
+          
+          <div class="feedback-section incorrect mt-4" id="incorrectFeedback" style="display: none;">
+            <div class="feedback-heading incorrect">
+              <i class="bi bi-x-circle"></i> Not Quite Right
+            </div>
+            <p>Your solution doesn't correctly identify all palindromes. Here are some test cases that failed:</p>
+            <ul>
+              <li><code>is_palindrome("A man, a plan, a canal: Panama")</code> - Expected: <code>True</code>, Got: <code>False</code></li>
+            </ul>
+            <p>Make sure you're properly handling non-alphanumeric characters and case sensitivity.</p>
+          </div>
+          
+          <!-- Solution Section (Initially Hidden) -->
+          <div class="solution-section mt-4" id="solutionSection" style="display: none;">
+            <div class="solution-heading">
+              <i class="bi bi-code-slash"></i> Sample Solution
+            </div>
+            <pre><code>def is_palindrome(text):
+    # Clean the string: remove non-alphanumeric chars and convert to lowercase
+    clean_text = ''.join(char for char in text if char.isalnum()).lower()
+    
+    # Check if the cleaned string equals its reverse
+    return clean_text == clean_text[::-1]
+
+# Test cases
+print(is_palindrome("racecar"))  # True
+print(is_palindrome("A man, a plan, a canal: Panama"))  # True
+print(is_palindrome("hello world"))  # False</code></pre>
+            
+            <div class="mt-3">
+              <h6 class="fw-bold">Explanation:</h6>
+              <ol>
+                <li>We first clean the string by removing all non-alphanumeric characters and converting to lowercase.</li>
+                <li>Then we check if the cleaned string equals its reverse using string slicing (<code>[::-1]</code>).</li>
+                <li>This approach correctly handles all the requirements of ignoring case, spaces, and punctuation.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="nextProblemButton">Next Problem</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Hint button functionality
+    const hintButton = document.getElementById('hintButton');
+    const hintSection = document.getElementById('hintSection');
+    
+    if (hintButton && hintSection) {
+      hintButton.addEventListener('click', function() {
+        hintSection.style.display = 'block';
+        hintButton.disabled = true;
+      });
+    }
+    
+    // Check solution functionality (demo only)
+    const checkSolutionButton = document.getElementById('checkSolutionButton');
+    const solutionInput = document.getElementById('solutionInput');
+    const correctFeedback = document.getElementById('correctFeedback');
+    const incorrectFeedback = document.getElementById('incorrectFeedback');
+    const solutionSection = document.getElementById('solutionSection');
+    
+    if (checkSolutionButton && solutionInput) {
+      checkSolutionButton.addEventListener('click', function() {
+        const solution = solutionInput.value.trim();
+        
+        // In a real implementation, this would make an API call to check the solution
+        // For demo purposes, we'll just check if the solution contains certain key elements
+        
+        if (solution.includes('isalnum') && 
+            (solution.includes('[::-1]') || solution.includes('reversed')) && 
+            solution.includes('lower')) {
+          
+          // Show correct feedback
+          if (correctFeedback) correctFeedback.style.display = 'block';
+          if (incorrectFeedback) incorrectFeedback.style.display = 'none';
+          
+        } else {
+          // Show incorrect feedback
+          if (incorrectFeedback) incorrectFeedback.style.display = 'block';
+          if (correctFeedback) correctFeedback.style.display = 'none';
+        }
+        
+        // Show the solution
+        if (solutionSection) solutionSection.style.display = 'block';
+        
+        // Disable the check button
+        checkSolutionButton.disabled = true;
+      });
+    }
+    
+    // Next problem button (demo only)
+    const nextProblemButton = document.getElementById('nextProblemButton');
+    
+    if (nextProblemButton) {
+      nextProblemButton.addEventListener('click', function() {
+        // In a real implementation, this would load the next problem
+        // For demo purposes, we'll just close the modal and inform the user
+        const modal = bootstrap.Modal.getInstance(document.getElementById('problemDetailModal'));
+        if (modal) modal.hide();
+        
+        alert('In the full implementation, this would load the next problem!');
+      });
+    }
+    
+    // Topic filter buttons
+    const topicFilterItems = document.querySelectorAll('.topic-filter-item');
+    
+    if (topicFilterItems.length > 0) {
+      topicFilterItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Remove active class from all items
+          topicFilterItems.forEach(i => i.classList.remove('active'));
+          
+          // Add active class to clicked item
+          this.classList.add('active');
+          
+          // In a real implementation, this would filter the problems
+          // For demo purposes, we'll just log the selected topic
+          console.log('Selected topic:', this.textContent.trim());
+        });
+      });
+    }
+  });
+</script>
+{% endblock %}

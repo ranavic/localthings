@@ -1,0 +1,1063 @@
+{% extends 'base.html' %}
+{% load static %}
+{% csrf_token %}
+
+{% block title %}Chat with AI Tutor | SkillForge{% endblock %}
+
+{% block extra_css %}
+<!-- Highlight.js for code syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+<!-- Google Fonts - Poppins for better typography -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ai-gradient-start: #6366f1;
+    --ai-gradient-end: #4f46e5;
+    --user-gradient-start: #3b82f6;
+    --user-gradient-end: #2563eb;
+    --chat-bg: #f9fafb;
+    --sidebar-bg: #f3f4f6;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  .chat-layout {
+    height: calc(100vh - 76px);
+    display: flex;
+    flex-direction: row;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
+  
+  .chat-sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--gray-200);
+    width: 320px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    z-index: 100;
+    box-shadow: inset -5px 0 15px -5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .chat-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--chat-bg);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .session-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .session-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    margin: 0.5rem;
+  }
+  
+  .session-item:hover {
+    background-color: var(--gray-200);
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+  }
+  
+  .session-item.active {
+    background-color: rgba(99, 102, 241, 0.1);
+    border-left: 4px solid var(--ai-gradient-start);
+    box-shadow: var(--card-shadow);
+  }
+  
+  .session-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--ai-gradient-start), var(--ai-gradient-end));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+  }
+  
+  .session-info {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  
+  .session-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .session-preview {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .session-time {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+  }
+  
+  .chat-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+  }
+  
+  .chat-title {
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .chat-title i {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    color: var(--primary-color);
+  }
+  
+  .chat-actions .btn {
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .message-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background-color: var(--chat-bg);
+    display: flex;
+    flex-direction: column;
+    background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" fill="%239C92AC" fill-opacity="0.05" fill-rule="evenodd"/%3E%3C/svg%3E');
+    scroll-behavior: smooth;
+  }
+  
+  .message {
+    margin-bottom: 1.5rem;
+    max-width: 85%;
+    position: relative;
+    display: flex;
+    animation: message-fade-in 0.5s ease;
+    transform-origin: left center;
+  }
+  
+  @keyframes message-fade-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  .message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    margin-right: 1rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: rotate(-5deg);
+  }
+  
+  .message-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .message-content {
+    background-color: white;
+    border-radius: 2px 18px 18px 18px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--card-shadow);
+    color: var(--gray-800);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }  
+  
+  .message-content:hover {
+    box-shadow: var(--card-hover-shadow);
+    transform: translateY(-2px);
+  }
+  
+  .message-sender {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gray-900);
+  }
+  
+  .message-text {
+    line-height: 1.8;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+  }
+  
+  .message-text p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .message-time {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+  
+  .message-user {
+    align-self: flex-end;
+    transform-origin: right center;
+  }
+  
+  .message-user .message-content {
+    background: linear-gradient(135deg, var(--user-gradient-start), var(--user-gradient-end));
+    color: white;
+    border-radius: 18px 2px 18px 18px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  
+  .message-user .message-sender {
+    color: white;
+    opacity: 0.9;
+  }
+  
+  .message-user .message-time {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .ai-avatar {
+    background: linear-gradient(135deg, var(--ai-gradient-start), var(--ai-gradient-end));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    position: relative;
+    overflow: visible;
+  }
+  
+  .ai-avatar:after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    bottom: 0;
+    right: 0;
+    border: 2px solid white;
+  }
+  
+  .user-avatar {
+    background: linear-gradient(135deg, var(--user-gradient-start), var(--user-gradient-end));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transform: rotate(5deg);
+  }
+  
+  .message-code {
+    background-color: #1e293b;
+    border-radius: 8px;
+    padding: 1.25rem;
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 1.25rem 0;
+    overflow-x: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--ai-gradient-start);
+    position: relative;
+  }
+  
+  .message-code:before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 0 0 4px 4px;
+  }
+  
+  .message-math {
+    background-color: var(--gray-100);
+    border-radius: 8px;
+    padding: 1rem;
+    color: var(--gray-900);
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+  
+  .chat-composer {
+    padding: 1.25rem 2rem;
+    background-color: white;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* Error toast styling */
+  .error-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ef4444;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+  
+  .error-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Typing indicator animation */
+  @keyframes typing-dot {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-5px); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(0); }
+  }
+  
+  .typing-indicator {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  
+  .typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--ai-gradient-start);
+    border-radius: 50%;
+    margin: 0 2px;
+    display: inline-block;
+    opacity: 0.6;
+  }
+  
+  .typing-indicator span:nth-child(1) {
+    animation: typing-dot 1.4s infinite 0s;
+  }
+  
+  .typing-indicator span:nth-child(2) {
+    animation: typing-dot 1.4s infinite 0.2s;
+  }
+  
+  .typing-indicator span:nth-child(3) {
+    animation: typing-dot 1.4s infinite 0.4s;
+  }
+  
+  .chat-input {
+    flex-grow: 1;
+    border: 1px solid var(--gray-300);
+    border-radius: 30px;
+    padding: 1rem 1.5rem;
+    resize: none;
+    max-height: 120px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--card-shadow);
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+  }
+  
+  .chat-input:focus {
+    border-color: var(--ai-gradient-start);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  }
+  
+  .chat-input::placeholder {
+    color: var(--gray-400);
+  }
+  
+  .chat-actions-right {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+  }
+  
+  .chat-action-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 1.25rem;
+  }
+  
+  .chat-action-btn:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-900);
+  }
+  
+  .chat-send-btn {
+    background: linear-gradient(135deg, var(--ai-gradient-start), var(--ai-gradient-end));
+    color: white;
+    box-shadow: var(--card-shadow);
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .chat-send-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--card-hover-shadow);
+  }
+  
+  .chat-send-btn:active {
+    transform: translateY(0) scale(0.95);
+  }
+  
+  .chat-tools {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    transform-origin: bottom center;
+    transition: all var(--transition-fast);
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  .chat-tools.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .chat-tool-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background-color: var(--gray-100);
+    border: none;
+    font-size: 0.9rem;
+    color: var(--gray-800);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .chat-tool-btn:hover {
+    background-color: var(--gray-200);
+  }
+  
+  .chat-tool-btn i {
+    margin-right: 0.5rem;
+  }
+  
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    width: fit-content;
+  }
+  
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--gray-500);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typing 1.4s infinite both;
+  }
+  
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes typing {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-5px); }
+  }
+  
+  .mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray-700);
+    margin-right: 1rem;
+  }
+  
+  @media (max-width: 992px) {
+    .chat-layout {
+      position: relative;
+    }
+    
+    .mobile-toggle {
+      display: block;
+    }
+    
+    .chat-sidebar {
+      position: absolute;
+      left: -300px;
+      top: 0;
+      bottom: 0;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .chat-sidebar.active {
+      left: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+  <!-- Sidebar with Chat Sessions -->
+  <div class="chat-sidebar">
+    <div class="p-3 d-flex align-items-center justify-content-between border-bottom">
+      <h5 class="mb-0 fw-bold">Chat Sessions</h5>
+      <a href="{% url 'ai_tutor:chat' %}" class="btn btn-sm btn-primary">
+        <i class="bi bi-plus"></i> New
+      </a>
+    </div>
+    
+    <ul class="session-list">
+      <!-- Sample sessions - these would be dynamically generated in a real app -->
+      <li class="session-item active">
+        <div class="session-icon">
+          <i class="bi bi-lightbulb"></i>
+        </div>
+        <div class="session-info">
+          <div class="session-title">Machine Learning Basics</div>
+          <div class="session-preview">Let's continue with neural networks...</div>
+        </div>
+        <div class="session-time">Now</div>
+      </li>
+      
+      <li class="session-item">
+        <div class="session-icon">
+          <i class="bi bi-code-slash"></i>
+        </div>
+        <div class="session-info">
+          <div class="session-title">JavaScript Debugging</div>
+          <div class="session-preview">How do I fix the async function?</div>
+        </div>
+        <div class="session-time">2h</div>
+      </li>
+      
+      <li class="session-item">
+        <div class="session-icon">
+          <i class="bi bi-bezier"></i>
+        </div>
+        <div class="session-info">
+          <div class="session-title">Calculus Problem Solving</div>
+          <div class="session-preview">Integration by parts example</div>
+        </div>
+        <div class="session-time">1d</div>
+      </li>
+      
+      <li class="session-item">
+        <div class="session-icon">
+          <i class="bi bi-database"></i>
+        </div>
+        <div class="session-info">
+          <div class="session-title">SQL Query Optimization</div>
+          <div class="session-preview">How to improve join performance</div>
+        </div>
+        <div class="session-time">3d</div>
+      </li>
+      
+      <li class="session-item">
+        <div class="session-icon">
+          <i class="bi bi-gpu-card"></i>
+        </div>
+        <div class="session-info">
+          <div class="session-title">CUDA Programming</div>
+          <div class="session-preview">Parallel processing fundamentals</div>
+        </div>
+        <div class="session-time">5d</div>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Main Chat Area -->
+  <div class="chat-main">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <button class="mobile-toggle" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+      
+      <h5 class="chat-title">
+        <i class="bi bi-lightbulb"></i>
+        Machine Learning Basics
+      </h5>
+      
+      <div class="chat-actions d-flex gap-2">
+        <button class="btn btn-light" title="Search in conversation">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="btn btn-light" title="Settings">
+          <i class="bi bi-gear"></i>
+        </button>
+        <div class="dropdown">
+          <button class="btn btn-light" id="moreActions" data-bs-toggle="dropdown" aria-expanded="false" title="More actions">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActions">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-download me-2"></i> Export Conversation</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i> Share as Notes</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i> Delete Conversation</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Messages Container -->
+    <div class="message-container" id="messageContainer">
+      <!-- Typing indicator will appear here when AI is "thinking" -->
+      <div class="typing-indicator" id="typingIndicator" style="display: none;">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      
+      <!-- AI Welcome Message -->
+      <div class="message">
+        <div class="message-avatar ai-avatar">
+          <i class="bi bi-robot"></i>
+        </div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor</div>
+          <div class="message-text">
+            <p>👋 Hello! I'm your AI tutor for machine learning. What specific aspects of neural networks would you like to explore today?</p>
+            <p>We can discuss architecture, activation functions, backpropagation, or practical implementations. Just let me know!</p>
+          </div>
+          <div class="message-time">10:30 AM</div>
+        </div>
+      </div>
+      
+      <!-- User Message -->
+      <div class="message message-user">
+        <div class="message-content">
+          <div class="message-sender">You</div>
+          <div class="message-text">
+            <p>Can you explain how backpropagation works in neural networks? I'm having trouble understanding how the gradients flow backwards.</p>
+          </div>
+          <div class="message-time">10:32 AM</div>
+        </div>
+        <div class="message-avatar user-avatar">
+          <i class="bi bi-person"></i>
+        </div>
+      </div>
+      
+      <!-- AI Response with Code and Math -->
+      <div class="message">
+        <div class="message-avatar ai-avatar">
+          <i class="bi bi-robot"></i>
+        </div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor</div>
+          <div class="message-text">
+            <p>Backpropagation is the algorithm used to train neural networks by minimizing the error between predicted and actual outputs. Here's a simplified explanation:</p>
+            
+            <p>1. <strong>Forward Pass:</strong> Input data flows through the network, layer by layer, to produce an output.</p>
+            
+            <p>2. <strong>Error Calculation:</strong> The difference between predicted and actual outputs is calculated.</p>
+            
+            <p>3. <strong>Backward Pass:</strong> The error is propagated backwards through the network to calculate how each weight contributes to the error.</p>
+            
+            <p>4. <strong>Weight Update:</strong> Weights are adjusted to minimize the error using gradient descent.</p>
+            
+            <div class="message-math">
+              For each weight w<sub>ij</sub> between nodes i and j:<br>
+              ∂E/∂w<sub>ij</sub> = ∂E/∂a<sub>j</sub> × ∂a<sub>j</sub>/∂w<sub>ij</sub><br>
+              Where E is the error, and a<sub>j</sub> is the activation of node j.
+            </div>
+            
+            <p>Here's a simple Python implementation of backpropagation for a 2-layer network:</p>
+            
+            <div class="message-code">
+              import numpy as np
+              
+              # Forward pass
+              def forward(X, W1, W2):
+                  Z1 = np.dot(X, W1)
+                  A1 = sigmoid(Z1)
+                  Z2 = np.dot(A1, W2)
+                  A2 = sigmoid(Z2)
+                  return Z1, A1, Z2, A2
+              
+              # Backward pass  
+              def backward(X, Y, W1, W2, Z1, A1, Z2, A2, learning_rate):
+                  m = X.shape[0]
+                  
+                  # Output layer error
+                  dZ2 = A2 - Y
+                  dW2 = (1/m) * np.dot(A1.T, dZ2)
+                  
+                  # Hidden layer error
+                  dZ1 = np.dot(dZ2, W2.T) * sigmoid_derivative(Z1)
+                  dW1 = (1/m) * np.dot(X.T, dZ1)
+                  
+                  # Update weights
+                  W1 -= learning_rate * dW1
+                  W2 -= learning_rate * dW2
+                  
+                  return W1, W2
+            </div>
+            
+            <p>Would you like me to break down this process step by step with a specific example? Or would you prefer a more visual explanation?</p>
+          </div>
+          <div class="message-time">10:35 AM</div>
+        </div>
+      </div>
+      
+      <!-- Typing Indicator -->
+      <div class="message">
+        <div class="message-avatar ai-avatar">
+          <i class="bi bi-robot"></i>
+        </div>
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Chat Composer -->
+    <div class="chat-composer position-relative">
+      <!-- Hidden topic input for context -->
+      <input type="hidden" id="topicInput" value="{{ topic|default:'' }}">
+      <!-- CSRF Token -->
+      {% csrf_token %}
+      <!-- Chat Tools Panel -->
+      <div class="chat-tools" id="chatTools">
+        <button class="chat-tool-btn"><i class="bi bi-card-image"></i> Upload Image</button>
+        <button class="chat-tool-btn"><i class="bi bi-code-square"></i> Code Snippet</button>
+        <button class="chat-tool-btn"><i class="bi bi-file-earmark-code"></i> Upload File</button>
+        <button class="chat-tool-btn"><i class="bi bi-table"></i> Table</button>
+        <button class="chat-tool-btn"><i class="bi bi-calculator"></i> Math Equation</button>
+        <button class="chat-tool-btn"><i class="bi bi-diagram-2"></i> Diagram</button>
+      </div>
+      
+      <textarea class="chat-input" placeholder="Type your message..." rows="1" id="messageInput"></textarea>
+      <div class="chat-actions-right">
+        <button class="chat-action-btn" id="toolsToggle" title="Show tools">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        <button class="chat-action-btn chat-send-btn" title="Send message">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Highlight.js for code syntax highlighting -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle for mobile
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const chatSidebar = document.querySelector('.chat-sidebar');
+    
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', function() {
+        chatSidebar.classList.toggle('active');
+      });
+    }
+    
+    // Tools toggle
+    const toolsToggle = document.getElementById('toolsToggle');
+    const chatTools = document.getElementById('chatTools');
+    
+    if (toolsToggle && chatTools) {
+      toolsToggle.addEventListener('click', function() {
+        chatTools.classList.toggle('active');
+      });
+    }
+    
+    // Auto-expanding textarea
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+      messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+      });
+    }
+    
+    // Close chat tools when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('#toolsToggle') && !event.target.closest('#chatTools')) {
+        if (chatTools && chatTools.classList.contains('active')) {
+          chatTools.classList.remove('active');
+        }
+      }
+    });
+    
+    // Demo: Send message on pressing Enter
+    if (messageInput) {
+      messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    }
+    
+    const sendButton = document.querySelector('.chat-send-btn');
+    if (sendButton) {
+      sendButton.addEventListener('click', sendMessage);
+    }
+    
+    // Global variables for chat state
+    let currentSessionId = '{{ session_id }}';
+    // Get CSRF token from cookie instead of hidden input field
+    function getCSRFToken() {
+      const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+      return cookieValue || document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    }
+    const csrfToken = getCSRFToken();
+    
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const messageText = messageInput.value.trim();
+      const topicInput = document.getElementById('topicInput');
+      const topic = topicInput ? topicInput.value.trim() : '';
+      
+      if (messageText.length === 0) return;
+      
+      // Create new message element
+      const messageContainer = document.getElementById('messageContainer');
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message message-user';
+      
+      const currentTime = new Date();
+      const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      messageElement.innerHTML = `
+        <div class="message-content">
+          <div class="message-sender">You</div>
+          <div class="message-text">
+            <p>${escapeHtml(messageText)}</p>
+          </div>
+          <div class="message-time">${formattedTime}</div>
+        </div>
+        <div class="message-avatar user-avatar">
+          <i class="bi bi-person"></i>
+        </div>
+      `;
+            
+      // Add message to container
+      messageContainer.appendChild(messageElement);
+            
+      // Clear input and resize
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+            
+      // Scroll to bottom
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+            
+      // Show typing indicator
+      const typingIndicator = document.getElementById('typingIndicator');
+      typingIndicator.style.display = 'flex';
+            
+      messageContainer.appendChild(typingIndicator);
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+            
+      // Send request to server in a real app
+      fetch('/ai-tutor/chat/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+          message: messageText,
+          session_id: currentSessionId,
+          topic: topic
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+            
+        if (data.status === 'success') {
+          // Update session ID if new
+          if (currentSessionId === 'new') {
+            currentSessionId = data.session_id;
+          }
+                
+          // Create AI response message
+          const aiResponse = document.createElement('div');
+          aiResponse.className = 'message';
+                
+          // Format the response with code highlighting
+          const formattedContent = formatMessageContent(data.message.content);
+                
+          aiResponse.innerHTML = `
+            <div class="message-avatar ai-avatar">
+              <i class="bi bi-robot"></i>
+            </div>
+            <div class="message-content">
+              <div class="message-sender">AI Tutor</div>
+              <div class="message-text">${formattedContent}</div>
+              <div class="message-time">${formattedTime}</div>
+            </div>
+          `;
+                
+          // Add AI response to chat
+          messageContainer.appendChild(aiResponse);
+                
+          // Highlight code blocks
+          aiResponse.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+          });
+                
+          // Add language label to code blocks
+          aiResponse.querySelectorAll('.message-code').forEach((block) => {
+            const codeElement = block.querySelector('code');
+            if (codeElement && codeElement.className) {
+              const language = codeElement.className.replace('language-', '');
+              block.setAttribute('data-language', language);
+            }
+          });
+                
+          // Scroll to bottom
+          messageContainer.scrollTop = messageContainer.scrollHeight;
+        } else {
+          // Show error message
+          const errorToast = document.createElement('div');
+          errorToast.className = 'error-toast';
+          errorToast.textContent = data.message || 'Error sending message';
+          document.body.appendChild(errorToast);
+                
+          setTimeout(() => {
+            errorToast.classList.add('show');
+          }, 100);
+                
+          setTimeout(() => {
+            errorToast.classList.remove('show');
+            setTimeout(() => {
+              document.body.removeChild(errorToast);
+            }, 300);
+          }, 3000);
+        }
+      })
+      .catch(error => {
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+            
+        console.error('Error:', error);
+        alert('Error sending message. Please try again.');
+      });
+    }
+        
+    // Helper function to escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+        
+    // Format chat message content with code blocks and basic formatting
+    function formatMessageContent(content) {
+      // Initial content without any formatting
+      let formatted = content;
+            
+      // Replace code blocks with proper syntax highlighting
+      formatted = formatted.replace(/```([a-z]*)(\n[\s\S]*?\n)```/g, function(match, language, code) {
+        return `<div class="message-code" data-language="${language || 'code'}"><pre><code class="language-${language || 'plaintext'}">${code.trim()}</code></pre></div>`;
+      });
+            
+      // Replace inline code
+      formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+      // Replace ** for bold text
+      formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            
+      // Replace * for italic text
+      formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            
+      // Replace new lines with paragraphs
+      formatted = formatted.split('\n\n').map(para => {
+        if (!para.trim()) return '';
+        if (para.startsWith('<div') || para.startsWith('<pre')) return para;
+        return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+      }).join('');
+            
+      // If no paragraphs were created and it's not a special element, wrap in paragraph
+      if (!formatted.includes('<p>') && !formatted.startsWith('<div') && !formatted.startsWith('<pre')) {
+        formatted = `<p>${formatted}</p>`;
+      }
+            
+      return formatted;
+    }
+  });
+</script>
+{% endblock %}

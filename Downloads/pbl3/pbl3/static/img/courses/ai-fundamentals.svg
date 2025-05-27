@@ -1,0 +1,25 @@
+<svg width="400" height="225" viewBox="0 0 400 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="225" rx="8" fill="#7c3aed" fill-opacity="0.1"/>
+  <rect width="400" height="225" rx="8" fill="url(#paint0_linear)" fill-opacity="0.8"/>
+  
+  <!-- Brain icon -->
+  <path d="M200 65C183.4 65 170 78.4 170 95C170 111.6 183.4 125 200 125C216.6 125 230 111.6 230 95C230 78.4 216.6 65 200 65ZM200 115C189 115 180 106 180 95C180 84 189 75 200 75C211 75 220 84 220 95C220 106 211 115 200 115Z" fill="white"/>
+  <path d="M200 85C195 85 190 90 190 95C190 100 195 105 200 105C205 105 210 100 210 95C210 90 205 85 200 85Z" fill="white"/>
+  <path d="M185 140H215M180 155H220M190 170H210" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Connection lines -->
+  <path d="M160 90C145 85 135 95 140 110" stroke="white" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M240 90C255 85 265 95 260 110" stroke="white" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M160 100C140 105 135 120 150 135" stroke="white" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M240 100C260 105 265 120 250 135" stroke="white" stroke-width="2" stroke-dasharray="4 4"/>
+  
+  <!-- Title -->
+  <text x="200" y="200" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">AI FUNDAMENTALS</text>
+  
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="400" y2="225" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+</svg>
